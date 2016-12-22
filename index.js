@@ -553,7 +553,7 @@ Discovery.prototype.sendEventToService = function(name, eventName, data) {
     if (this.services[name].local)
         this.emit(GLOBAL_EVENT_NAME, eventName, data);
     else
-        this.sendEventToAddr(this.services[name].addr, eventName, data);
+        this.sendEventToAddress(this.services[name].addr, eventName, data);
 
     return true;
 };
