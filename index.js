@@ -68,13 +68,14 @@ function Discovery(options) {
     // listen and listen for multicast packets
     self.socket.on('listening', function() {
         if(self.bindAddr) {
+	console.log("Adding UDP membership to %s", self.bindAddr);
             self.socket.addMembership(MULTICAST_ADDRESS, self.bindAddr);
         } else {
             var interfaces = os.networkInterfaces();
             Object.values(interfaces).forEach(function(interf) {
             	interf.forEach(function(ifAddr) {
             		if(ifAddr.internal == false && ifAddr.family == 'IPv4') {
-	                    console.log("Adding membership to %s", ifAddr.address);
+	                    console.log("Adding UDP membership to %s", ifAddr.address);
 	                    self.socket.addMembership(MULTICAST_ADDRESS, ifAddr.address);
 	                }
             	})
