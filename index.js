@@ -17,6 +17,7 @@ var events = require('events');
 var debug = require('debug')('udp-discovery');
 var is = require('is2');
 var objToJson = require('obj-to-json');
+var os = require('os');
 
 // Constants
 var MULTICAST_ADDRESS = '224.0.0.234';
@@ -66,7 +67,17 @@ function Discovery(options) {
 
     // listen and listen for multicast packets
     self.socket.on('listening', function() {
-        self.socket.addMembership(MULTICAST_ADDRESS);
+        if(self.bindAddr) {
+            self.socket.addMembership(MULTICAST_ADDRESS, self.bindAddr);
+        } else {
+            var interfaces = os.networkInterfaces();
+            Object.values(interfaces).forEach(function(interface) {
+                if(interface.internal == false && interface.family == 'IPv4') {
+                    console.log("Adding membership to %s", interface.address);
+                    self.socket.addMembership(MULTICAST_ADDRESS, interface.address);
+                }
+            });
+        }
     });
 
     // handle any announcements, here we just do the formatting
