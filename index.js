@@ -72,10 +72,12 @@ function Discovery(options) {
         } else {
             var interfaces = os.networkInterfaces();
             Object.values(interfaces).forEach(function(interf) {
-                if(interf.internal == false && interf.family == 'IPv4') {
-                    console.log("Adding membership to %s", interf.address);
-                    self.socket.addMembership(MULTICAST_ADDRESS, interf.address);
-                }
+            	interf.forEach(function(ifAddr) {
+            		if(ifAddr.internal == false && ifAddr.family == 'IPv4') {
+	                    console.log("Adding membership to %s", ifAddr.address);
+	                    self.socket.addMembership(MULTICAST_ADDRESS, ifAddr.address);
+	                }
+            	})
             });
         }
     });
